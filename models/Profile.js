@@ -19,12 +19,10 @@ const ProfileSchema = new mongoose.Schema({
   education: [
     {
       school: {
-        type: String,
-        required: true
+        type: String
       },
       fieldOfStudy: {
-        type: String,
-        require: true
+        type: String
       }
     }
   ],
