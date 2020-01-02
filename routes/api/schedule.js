@@ -59,12 +59,12 @@ router.post(
       res.status(500).send('Server Error');
     }
 
-    console.log('Training Seasion booked!');
+    console.log('Training seasion booked...');
   }
 );
 
 // @route     GET api/schedule/events/:id
-// @desc      Get all events for the specific trainer
+// @desc      Get all events for a specific trainer
 // @access    Public
 
 router.get('/events/:id', async (req, res) => {
