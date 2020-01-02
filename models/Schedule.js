@@ -1,32 +1,43 @@
 const mongoose = require('mongoose');
 
 const ScheduleSchema = new mongoose.Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
+  trainerId: {
+    type: String,
     ref: 'user'
   },
-  dates: [
+  firstName: {
+    type: String,
+    required: true
+  },
+  lastName: {
+    type: String,
+    required: true
+  },
+  email: {
+    type: String,
+    required: true
+  },
+  phone: {
+    type: String,
+    required: true
+  },
+  goals: [
     {
-      firstName: {
-        type: String,
-        required: true
-      },
-      lastName: {
-        type: String,
-        required: true
-      },
-      email: {
-        type: String,
-        required: true
-      },
-      goal: {
-        type: String
-      },
-
-      isVerified: {
-        type: Boolean,
-        default: false
-      }
+      type: String
     }
-  ]
+  ],
+  isVerified: {
+    type: Boolean,
+    default: false
+  },
+  dateEvent: {
+    type: Date,
+    required: true
+  },
+  date: {
+    type: Date,
+    default: Date.now
+  }
 });
+
+module.exports = Schedule = mongoose.model('schedule', ScheduleSchema);
