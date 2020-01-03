@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { check, validationResult } = require('express-validator');
+const auth = require('../../middleware/auth');
 
 const Schedule = require('../../models/Schedule');
 
@@ -64,22 +65,36 @@ router.post(
 );
 
 // @route     GET api/schedule/events/:id
-// @desc      Get all events for a specific trainer
+// @desc      Get all events for a specific trainer - Testing
 // @access    Public
 
-router.get('/events/:id', async (req, res) => {
+/* router.get('/events/public/:id', async (req, res) => {
   try {
     console.log(req.params.id);
-    let events = await Schedule.find({});
+    let events = await Schedule.find({ trainerId: req.params.id });
+
+    res.json(events);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+}); */
+
+// @route     GET api/schedule/events
+// @desc      Get all events for the specific trainer
+// @access    Private
+
+router.get('/events/:id', auth, async (req, res) => {
+  try {
+    const events = await Schedule.find({ trainerId: req.params.id });
+    if (!events) {
+      return res.status(400).json({ msg: 'There is no events for this user' });
+    }
     res.json(events);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
   }
 });
-
-// @route     GET api/schedule/events
-// @desc      Get all events for the specific trainer
-// @access    Private
 
 module.exports = router;
