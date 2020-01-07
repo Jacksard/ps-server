@@ -64,24 +64,8 @@ router.post(
   }
 );
 
-// @route     GET api/schedule/events/:id
-// @desc      Get all events for a specific trainer - Testing
-// @access    Public
-
-/* router.get('/events/public/:id', async (req, res) => {
-  try {
-    console.log(req.params.id);
-    let events = await Schedule.find({ trainerId: req.params.id });
-
-    res.json(events);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
-  }
-}); */
-
 // @route     GET api/schedule/events
-// @desc      Get all events for the specific trainer
+// @desc      Get all events for a specific trainer
 // @access    Private
 
 router.get('/events/:id', auth, async (req, res) => {
