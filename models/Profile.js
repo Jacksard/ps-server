@@ -21,7 +21,7 @@ const ProfileSchema = new mongoose.Schema({
       school: {
         type: String
       },
-      fieldOfStudy: {
+      fieldofstudy: {
         type: String
       }
     }

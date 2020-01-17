@@ -14,7 +14,7 @@ router.get('/me', auth, async (req, res) => {
   try {
     const profile = await Profile.findOne({
       user: req.user.id
-    }).populate('user', ['name', 'avatar']);
+    }).populate('user', ['name']);
     if (!profile) {
       return res.status(400).json({ msg: 'There is no profile for this user' });
     }
@@ -71,10 +71,72 @@ router.post(
     if (bio) profileFields.bio = bio;
     if (school) profileFields.school = school;
     if (fieldOfStudy) profileFields.fieldOfStudy = fieldOfStudy;
-    if (youtube) profileFields.youtube = youtube;
-    if (instagram) profileFields.instagram = instagram;
-    if (linkedin) profileFields.linkedin = linkedin;
-    if (facebook) profileFields.facebook = facebook;
+
+    // Build social object
+    profileFields.social = {};
+    if (youtube) profileFields.social.youtube = youtube;
+    if (instagram) profileFields.social.instagram = instagram;
+    if (linkedin) profileFields.social.linkedin = linkedin;
+    if (facebook) profileFields.social.facebook = facebook;
+    try {
+      // Using upsert option (creates new doc if no match is found):
+      let profile = await Profile.findOneAndUpdate(
+        { user: req.user.id },
+        { $set: profileFields },
+        { new: true, upsert: true }
+      );
+      res.json(profile);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server Error');
+    }
+  }
+);
+
+// @route    PUT api/profile/education
+// @desc     Add profile education
+// @access   Private
+router.put(
+  '/education',
+  [
+    auth,
+    [
+      check('school', 'School is required')
+        .not()
+        .isEmpty(),
+
+      check('fieldofstudy', 'Field of study is required')
+        .not()
+        .isEmpty()
+    ]
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { school, fieldofstudy } = req.body;
+
+    const newEdu = {
+      school,
+      fieldofstudy
+    };
+
+    console.log(newEdu);
+
+    try {
+      const profile = await Profile.findOne({ user: req.user.id });
+
+      await profile.education.unshift(newEdu);
+
+      await profile.save();
+
+      res.json(profile);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server Error');
+    }
   }
 );
 
